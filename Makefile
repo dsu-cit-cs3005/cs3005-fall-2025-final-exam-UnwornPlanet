@@ -2,14 +2,34 @@
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -pedantic
 
-# Targets
-all: test_robot
+# Executable
+TARGET = RobotWarz
 
-RobotBase.o: RobotBase.cpp RobotBase.h
-	$(CXX) $(CXXFLAGS) -c RobotBase.cpp
+# Source files
+SRCS = Arena.cpp RobotWarz_aux.cpp RobotWarz.cpp
 
-test_robot: test_robot.cpp RobotBase.o
-	$(CXX) $(CXXFLAGS) test_robot.cpp RobotBase.o -ldl -o test_robot
+# Object files
+OBJS = Arena.o RobotWarz_aux.o RobotWarz.o
 
+# Default target
+all: $(TARGET)
+
+# Compile Arena
+Arena.o: Arena.cpp Arena.h RobotBase.h
+	$(CXX) $(CXXFLAGS) -c Arena.cpp
+
+# Compile RobotWarz auxiliary
+RobotWarz_aux.o: RobotWarz_aux.cpp RobotWarz_aux.h Arena.h RobotBase.h
+	$(CXX) $(CXXFLAGS) -c RobotWarz_aux.cpp
+
+# Compile main
+RobotWarz.o: RobotWarz.cpp RobotWarz_aux.h
+	$(CXX) $(CXXFLAGS) -c RobotWarz.cpp
+
+# Link final executable (RobotBase.o already exists)
+$(TARGET): $(OBJS) RobotBase.o
+	$(CXX) $(CXXFLAGS) $(OBJS) RobotBase.o -ldl -o $(TARGET)
+
+# Clean build artifacts
 clean:
-	rm -f *.o test_robot *.so
+	rm -f *.o *.so $(TARGET)

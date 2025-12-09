@@ -232,10 +232,8 @@ void Arena::handle_movement(const std::string& name,
             mGrid[r][c] = ".";
 
             // Mark robot as dead/trapped visually (X + symbol)
-            std::string deadID = "X";
-            deadID += name[1];   // carry over the robot's symbol
 
-            mGrid[nr][nc] = deadID;
+            mGrid[nr][nc] = name;
 
             robot->move_to(nr, nc);
             robot->disable_movement();

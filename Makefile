@@ -14,6 +14,14 @@ OBJS = Arena.o RobotWarz_aux.o RobotWarz.o
 # Default target
 all: $(TARGET)
 
+# --- Build normal RobotBase object for main executable ---
+RobotBase.o: RobotBase.cpp RobotBase.h
+	$(CXX) $(CXXFLAGS) -c RobotBase.cpp
+
+# --- Build PIC version of RobotBase for shared libraries ---
+RobotBase_pic.o: RobotBase.cpp RobotBase.h
+	$(CXX) $(CXXFLAGS) -fPIC -c RobotBase.cpp -o RobotBase_pic.o
+
 # Compile Arena
 Arena.o: Arena.cpp Arena.h RobotBase.h
 	$(CXX) $(CXXFLAGS) -c Arena.cpp
@@ -26,10 +34,11 @@ RobotWarz_aux.o: RobotWarz_aux.cpp RobotWarz_aux.h Arena.h RobotBase.h
 RobotWarz.o: RobotWarz.cpp RobotWarz_aux.h
 	$(CXX) $(CXXFLAGS) -c RobotWarz.cpp
 
-# Link final executable (RobotBase.o already exists)
-$(TARGET): $(OBJS) RobotBase.o
+# Link final executable
+$(TARGET): $(OBJS) RobotBase.o RobotBase_pic.o
 	$(CXX) $(CXXFLAGS) $(OBJS) RobotBase.o -ldl -o $(TARGET)
 
 # Clean build artifacts
 clean:
 	rm -f *.o *.so $(TARGET)
+

@@ -78,7 +78,11 @@ void Arena::printState(std::ostream& os){
 
         // Print the actual arena row
         for (int col = 0; col < mWidth; col++) {
-            os << mGrid[row][col] << "  ";
+		if(mGrid[row][col][0]=='R' || mGrid[row][col][0]=='X'){
+			os<<mGrid[row][col]<< " ";
+		}else{
+            		os << mGrid[row][col] << "  ";
+		};
         }
 
         os << "\n";
@@ -209,7 +213,9 @@ void Arena::handle_movement(const std::string& name,
 
     int dr = directions[direction].first;
     int dc = directions[direction].second;
-
+	if(robot->get_move_speed()<=0){
+		return;
+	};
     for (int step = 0; step < distance; ++step)
     {
         int nr = r + dr;
@@ -247,7 +253,17 @@ void Arena::handle_movement(const std::string& name,
 	{
     		int dmg = 30 + rand() % 21;
     		robot->take_damage(dmg);
-    		steppingOnFlame = true;     // ✅ NEW
+    		steppingOnFlame = true; 
+	    	if (robot->get_health() <= 0)
+		{
+    			// Mark dead robot immediately on the grid
+    			std::string deadID = "X";
+    			deadID += name[1];   // preserve symbol
+
+    			mGrid[nr][nc] = deadID;
+
+    			return;  // Stop movement immediately
+		}
 	}
         // ---- ROBOT COLLISION: BLOCK ----
         if (!cell.empty() && (cell[0] == 'R' || cell[0] == 'X'))

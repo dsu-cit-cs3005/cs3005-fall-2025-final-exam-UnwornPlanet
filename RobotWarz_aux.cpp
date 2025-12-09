@@ -149,6 +149,7 @@ void runGame(Arena& arena,
                 }
                 else
                 {
+			std::cout<<name<<" ";
                     std::cout << robot->print_stats()
                               << "\n\n";
                 }
